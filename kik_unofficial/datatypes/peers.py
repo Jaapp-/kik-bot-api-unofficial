@@ -30,8 +30,8 @@ class User(Peer):
         if xml_data.entity:
             self._parse_entity(xml_data.entity.text)
 
-    def _parse_entity(self, entity):
-        decoded_entity = base64.urlsafe_b64decode(entity)
+    def _parse_entity(self, s):
+        decoded_entity = base64.urlsafe_b64decode(s + '=' * (-len(s) % 4))
         user = EntityUser()
         user.ParseFromString(decoded_entity)
         if user.registration_element:
