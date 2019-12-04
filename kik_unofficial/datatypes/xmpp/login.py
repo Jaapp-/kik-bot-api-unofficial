@@ -110,7 +110,7 @@ class EstablishAuthenticatedSessionRequest(XMPPElement):
 class ConnectionFailedResponse:
     def __init__(self, data: BeautifulSoup):
         self.message = data.msg.text if data.msg else None
-        self.timeout = data.wait['t'] if data.wait else None
+        self.timeout = int(data.wait['t']) if data.wait else None
 
 
 class CaptchaElement:
