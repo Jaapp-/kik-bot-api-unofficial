@@ -5,6 +5,7 @@ import hmac
 
 import rsa
 from bs4 import BeautifulSoup
+
 from kik_unofficial.datatypes.xmpp.base_elements import XMPPElement
 from kik_unofficial.device_configuration import device_id, kik_version_info, android_id
 from kik_unofficial.utilities.cryptographic_utilities import CryptographicUtils
@@ -108,7 +109,8 @@ class EstablishAuthenticatedSessionRequest(XMPPElement):
 
 class ConnectionFailedResponse:
     def __init__(self, data: BeautifulSoup):
-        self.message = data.find('msg').text
+        self.message = data.msg.text if data.msg else None
+        self.timeout = data.wait['t'] if data.wait else None
 
 
 class CaptchaElement:
