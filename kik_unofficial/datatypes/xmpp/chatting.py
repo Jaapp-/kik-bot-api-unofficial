@@ -63,7 +63,8 @@ class IncomingChatMessage(XMPPResponse):
 
         self.from_jid = data['from']
         self.to_jid = data['to']
-        self.body = data.body.text if data.body else None
+        body = data.find('body', recursive=False)
+        self.body = body.text if body else None
         self.is_typing = data.find('is-typing')
         self.is_typing = self.is_typing['val'] == 'true' if self.is_typing else None
 
@@ -74,7 +75,8 @@ class IncomingGroupChatMessage(IncomingChatMessage):
     """
     def __init__(self, data: BeautifulSoup):
         super().__init__(data)
-        self.group_jid = data.g['jid']
+        g = data.find('g', recursive=False)
+        self.group_jid = g['jid']
 
 
 class OutgoingReadReceipt(XMPPElement):
@@ -229,8 +231,9 @@ class IncomingGroupStatus(XMPPResponse):
         self.requets_read_receipt = data.request['r'] == 'true' if data.request else False
         self.group_jid = data['from']
         self.to_jid = data['to']
-        self.status = data.status.text if data.status else None
-        self.status_jid = data.status['jid'] if data.status and 'jid' in data.status.attrs else None
+        status = data.find('status', recursive=False)
+        self.status = status.text if status else None
+        self.status_jid = status['jid'] if status and 'jid' in status.attrs else None
         self.group = Group(data.g) if data.g and len(data.g.contents) > 0 else None
 
 
@@ -243,8 +246,9 @@ class IncomingGroupSysmsg(XMPPResponse):
         self.requets_read_receipt = data.request['r'] == 'true' if data.request else False
         self.group_jid = data['from']
         self.to_jid = data['to']
-        self.sysmsg_xmlns = data.sysmsg['xmlns'] if data.sysmsg and 'xmlns' in data.sysmsg.attrs else None
-        self.sysmsg = data.sysmsg.text if data.sysmsg else None
+        sysmsg = data.find('sysmsg', recursive=False)
+        self.sysmsg_xmlns = sysmsg['xmlns'] if sysmsg and 'xmlns' in sysmsg.attrs else None
+        self.sysmsg = sysmsg.text if sysmsg else None
         self.group = Group(data.g) if data.g and len(data.g.contents) > 0 else None
 
 
