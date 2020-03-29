@@ -234,7 +234,8 @@ class IncomingGroupStatus(XMPPResponse):
         status = data.find('status', recursive=False)
         self.status = status.text if status else None
         self.status_jid = status['jid'] if status and 'jid' in status.attrs else None
-        self.group = Group(data.g) if data.g and len(data.g.contents) > 0 else None
+        group = data.find('g', recursive=False)
+        self.group = Group(group) if group and len(group.contents) > 0 else None
 
 
 class IncomingGroupSysmsg(XMPPResponse):
@@ -249,7 +250,8 @@ class IncomingGroupSysmsg(XMPPResponse):
         sysmsg = data.find('sysmsg', recursive=False)
         self.sysmsg_xmlns = sysmsg['xmlns'] if sysmsg and 'xmlns' in sysmsg.attrs else None
         self.sysmsg = sysmsg.text if sysmsg else None
-        self.group = Group(data.g) if data.g and len(data.g.contents) > 0 else None
+        group = data.find('g', recursive=False)
+        self.group = Group(group) if group and len(group.contents) > 0 else None
 
 
 class IncomingGroupReceiptsEvent(XMPPResponse):
